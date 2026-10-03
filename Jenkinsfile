@@ -12,5 +12,14 @@ pipeline {
             }
         }
 
+        stage('Build Profile Service') {
+            steps {
+                sh '''
+                    cd backend/profileService
+                    docker build -t profile-service:jenkins .
+                '''
+            }
+        }
+
     }
 }
