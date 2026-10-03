@@ -2,11 +2,15 @@ pipeline {
     agent any
 
     stages {
-        stage('Check Docker') {
+
+        stage('Build Hello Service') {
             steps {
-                sh 'docker --version'
-                sh 'docker ps'
+                sh '''
+                    cd backend/helloService
+                    docker build -t hello-service:jenkins .
+                '''
             }
         }
+
     }
 }
