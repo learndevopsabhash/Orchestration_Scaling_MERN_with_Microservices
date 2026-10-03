@@ -20,6 +20,14 @@ pipeline {
                 '''
             }
         }
+	stage('Build Frontend') {
+	    steps {
+	        sh '''
+	            cd frontend
+	            docker build -t frontend:jenkins .
+	        '''
+	    }
+	}
 
     }
 }
