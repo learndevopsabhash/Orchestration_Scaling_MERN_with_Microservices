@@ -20,12 +20,24 @@ pipeline {
                 '''
             }
         }
-	stage('Build Frontend') {
-	    steps {
-	        sh '''
-	            cd frontend
-	            docker build -t frontend:jenkins .
-	        '''
+		stage('Build Frontend') {
+		    steps {
+		        sh '''
+		            cd frontend
+		            docker build -t frontend:jenkins .
+		        '''
+		    }
+		}
+		stage('Check AWS ECR Access') {
+	    	steps {
+	        	withCredentials([[
+	            	$class: 'AmazonWebServicesCredentialsBinding',
+	            	credentialsId: 'aws-ecr-jenkins-user'
+	        		]]) {
+	            sh '''
+	               	aws sts get-caller-identity
+	            '''
+	        }
 	    }
 	}
 
