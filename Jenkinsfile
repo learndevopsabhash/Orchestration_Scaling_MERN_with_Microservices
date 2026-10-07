@@ -29,17 +29,30 @@ pipeline {
 		    }
 		}
 		stage('Check AWS ECR Access') {
-	    	steps {
-	        	withCredentials([[
-	            	$class: 'AmazonWebServicesCredentialsBinding',
-	            	credentialsId: 'aws-ecr-jenkins-user'
-	        		]]) {
+		steps {
+		withCredentials([[
+		$class: 'AmazonWebServicesCredentialsBinding',
+		credentialsId: 'aws-ecr-jenkins-user'
+		]]) {
 	            sh '''
-	               	aws sts get-caller-identity
+		aws sts get-caller-identity
 	            '''
 	        }
 	    }
 	}
+		stage('Login to ECR') {
+		steps {
+	        withCredentials([[
+		$class: 'AmazonWebServicesCredentialsBinding',
+		credentialsId: 'aws-ecr-jenkins-user'
+		]]) {
+			sh '''
+                aws ecr get-login-password --region ap-south-1 | \
+                docker login --username AWS --password-stdin 057079472578.dkr.ecr.ap-south-1.amazonaws.com
+			'''
+		        }
+		    }
+		}
 
     }
 }
