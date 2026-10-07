@@ -53,6 +53,21 @@ pipeline {
 		        }
 		    }
 		}
+		stage('Push Images to ECR') {
+		    steps {
+		        sh '''
+		            ECR_REGISTRY=057079472578.dkr.ecr.ap-south-1.amazonaws.com
+
+		            docker tag hello-service:jenkins $ECR_REGISTRY/hello-service:jenkins
+		            docker tag profile-service:jenkins $ECR_REGISTRY/profile-service:jenkins
+		            docker tag frontend:jenkins $ECR_REGISTRY/frontend:jenkins
+
+		            docker push $ECR_REGISTRY/hello-service:jenkins
+		            docker push $ECR_REGISTRY/profile-service:jenkins
+		            docker push $ECR_REGISTRY/frontend:jenkins
+		        '''
+		    }
+		}
 
     }
 }
