@@ -613,8 +613,124 @@ Final check
 
 ### Deploying Helm
 
-Check helm and helm version, list helm, and create helm
+Check helm and helm version, list helm, and create helm chart
 <img width="1505" height="794" alt="image" src="https://github.com/user-attachments/assets/e33336f2-b8c0-43c2-bf40-02866faf378c" />
 
+Update values.yaml
+```
+namespace: mern-app
 
-Create Helm - 
+frontend:
+  replicaCount: 1
+  image:
+    repository: 057079472578.dkr.ecr.ap-south-1.amazonaws.com/frontend
+    tag: "1.2"
+    pullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    port: 80
+    targetPort: 80
+
+helloService:
+  replicaCount: 1
+  image:
+    repository: 057079472578.dkr.ecr.ap-south-1.amazonaws.com/hello-service
+    tag: "1.0"
+    pullPolicy: IfNotPresent
+  port: 3001
+  env:
+    PORT: "3001"
+
+profileService:
+  replicaCount: 1
+  image:
+    repository: 057079472578.dkr.ecr.ap-south-1.amazonaws.com/profile-service
+    tag: "1.0"
+    pullPolicy: IfNotPresent
+  port: 3002
+  env:
+    PORT: "3002"
+  existingSecret: profile-service-secret
+  mongoUrlSecretKey: MONGO_URL
+```
+
+Create Helm file for helm deployments
+
+1. mern-app-chart\templates\frontend-deployment.yaml
+2. mern-app-chart\templates\frontend-service.yaml
+3. mern-app-chart\templates\hello-deployment.yaml
+4. mern-app-chart\templates\hello-service.yaml
+5. mern-app-chart\templates\profile-deployment.yaml
+6. mern-app-chart\templates\profile-service.yaml
+
+<img width="472" height="689" alt="image" src="https://github.com/user-attachments/assets/13047a91-f436-498b-9b33-b971292cfc18" />
+
+Remove the unused default Helm templates
+```
+rm -f mern-app-chart/templates/deployment.yaml \
+      mern-app-chart/templates/service.yaml \
+      mern-app-chart/templates/hpa.yaml \
+      mern-app-chart/templates/ingress.yaml \
+      mern-app-chart/templates/httproute.yaml \
+      mern-app-chart/templates/serviceaccount.yaml
+```
+
+Validate the Helm chart
+```
+helm lint mern-app-chart
+```
+<img width="1297" height="147" alt="image" src="https://github.com/user-attachments/assets/c6a9b750-1145-48d5-a209-d6a182a3a8b7" />
+
+Render the Helm chart
+Before deploying anything to EKS, we need to check the Kubernetes YAML that Helm generates from your templates and values.yaml.
+```
+helm template mern-app mern-app-chart --namespace mern-app
+```
+<img width="1305" height="969" alt="image" src="https://github.com/user-attachments/assets/af323962-c181-4e1e-a2c8-0fa6bd97962c" />
+<img width="1219" height="945" alt="image" src="https://github.com/user-attachments/assets/e1ede240-dd7e-420b-995f-319881ad5957" />
+<img width="1237" height="963" alt="image" src="https://github.com/user-attachments/assets/b91cb3ce-aded-4998-8f74-2e00eeb4f2dc" />
+<img width="1311" height="527" alt="image" src="https://github.com/user-attachments/assets/db932f33-10ca-44a2-931a-3da500d31d57" />
+
+Check how Helm can take ownership of existing resources
+```
+helm upgrade --help | grep -A 2 -B 2 take-ownership
+```
+<img width="1896" height="194" alt="image" src="https://github.com/user-attachments/assets/0ff5eb0c-1a15-49de-a851-fccaeb2b9f38" />
+
+Back up the current Kubernetes configuration
+```
+kubectl get deployments,services -n mern-app -o yaml > mern-app-resources-backup.yaml
+```
+
+Preview the Helm migration safely
+```
+helm upgrade --install mern-app mern-app-chart \
+  --namespace mern-app \
+  --take-ownership \
+  --dry-run=server
+```
+<img width="1324" height="963" alt="image" src="https://github.com/user-attachments/assets/622fa527-8444-4435-8294-c3032d6a5411" />
+<img width="1275" height="964" alt="image" src="https://github.com/user-attachments/assets/34e326ae-8894-46ef-b0e6-722432cd1789" />
+<img width="1280" height="964" alt="image" src="https://github.com/user-attachments/assets/a2209d3c-81a9-4f31-8c32-03dd086080b8" />
+<img width="1300" height="813" alt="image" src="https://github.com/user-attachments/assets/af105544-5c4c-4bb4-b5d4-1d56c0b62b17" />
+
+
+Perform the Helm migration
+```
+helm upgrade --install mern-app mern-app-chart \
+  --namespace mern-app \
+  --take-ownership \
+  --server-side=true \
+  --force-conflicts \
+  --wait \
+  --timeout 5m
+```
+<img width="1306" height="377" alt="image" src="https://github.com/user-attachments/assets/159a962f-8d05-463b-ac1e-6c52106e1a71" />
+Helm deployment succeeded.
+
+
+Verify the application after migration
+```
+kubectl get deployments,pods,services -n mern-app
+```
+<img width="1889" height="481" alt="image" src="https://github.com/user-attachments/assets/4a0c76b1-9077-4b7e-af10-f9cec033267d" />
