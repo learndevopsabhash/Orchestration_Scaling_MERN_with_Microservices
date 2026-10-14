@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-service
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.profileService.replicaCount }}
+  selector:
+    matchLabels:
+      app: profile-service
+  template:
+    metadata:
+      labels:
+        app: profile-service
+    spec:
+      containers:
+        - name: profile-service
+          image: "{{ .Values.profileService.image.repository }}:{{ .Values.profileService.image.tag }}"
+          imagePullPolicy: {{ .Values.profileService.image.pullPolicy }}
+          env:
+            - name: PORT
+              value: {{ .Values.profileService.env.PORT | quote }}
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.profileService.existingSecret }}
+                  key: {{ .Values.profileService.mongoUrlSecretKey }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.profileService.port }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 10
+            periodSeconds: 10

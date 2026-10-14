@@ -1,0 +1,341 @@
+apiVersion: v1
+items:
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"frontend","namespace":"mern-app"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"frontend"}},"template":{"metadata":{"labels":{"app":"frontend"}},"spec":{"containers":[{"image":"057079472578.dkr.ecr.ap-south-1.amazonaws.com/frontend:1.2","name":"frontend","ports":[{"containerPort":80}],"readinessProbe":{"httpGet":{"path":"/","port":80},"initialDelaySeconds":5,"periodSeconds":10}}]}}}}
+    creationTimestamp: "2026-10-11T14:09:52Z"
+    generation: 1
+    name: frontend
+    namespace: mern-app
+    resourceVersion: "37770"
+    uid: ec78118e-c65a-4f08-989b-5177f7a1158b
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: frontend
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: frontend
+      spec:
+        containers:
+        - image: 057079472578.dkr.ecr.ap-south-1.amazonaws.com/frontend:1.2
+          imagePullPolicy: IfNotPresent
+          name: frontend
+          ports:
+          - containerPort: 80
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-11T14:10:05Z"
+      lastUpdateTime: "2026-10-11T14:10:05Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-10-11T14:09:52Z"
+      lastUpdateTime: "2026-10-11T14:10:05Z"
+      message: ReplicaSet "frontend-787449c975" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "2"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"hello-service","namespace":"mern-app"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"hello-service"}},"template":{"metadata":{"labels":{"app":"hello-service"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"3001"}],"image":"057079472578.dkr.ecr.ap-south-1.amazonaws.com/hello-service:1.0","name":"hello-service","ports":[{"containerPort":3001}],"readinessProbe":{"httpGet":{"path":"/health","port":3001},"initialDelaySeconds":5,"periodSeconds":10},"resources":{"limits":{"cpu":"500m","memory":"512Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}}]}}}}
+    creationTimestamp: "2026-10-11T12:09:46Z"
+    generation: 4
+    name: hello-service
+    namespace: mern-app
+    resourceVersion: "20208"
+    uid: 1dcc050d-57ce-4661-8aeb-f200637e1f95
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: hello-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: hello-service
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "3001"
+          image: 057079472578.dkr.ecr.ap-south-1.amazonaws.com/hello-service:1.0
+          imagePullPolicy: IfNotPresent
+          name: hello-service
+          ports:
+          - containerPort: 3001
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 3001
+              scheme: HTTP
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-11T12:24:09Z"
+      lastUpdateTime: "2026-10-11T12:31:01Z"
+      message: ReplicaSet "hello-service-7d769ff9b4" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2026-10-11T12:32:54Z"
+      lastUpdateTime: "2026-10-11T12:32:54Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    observedGeneration: 4
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    annotations:
+      deployment.kubernetes.io/revision: "1"
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"profile-service","namespace":"mern-app"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"profile-service"}},"template":{"metadata":{"labels":{"app":"profile-service"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"3002"},{"name":"MONGO_URL","valueFrom":{"secretKeyRef":{"key":"MONGO_URL","name":"profile-service-secret"}}}],"image":"057079472578.dkr.ecr.ap-south-1.amazonaws.com/profile-service:1.0","name":"profile-service","ports":[{"containerPort":3002}],"readinessProbe":{"httpGet":{"path":"/health","port":3002},"initialDelaySeconds":10,"periodSeconds":10}}]}}}}
+    creationTimestamp: "2026-10-11T14:06:54Z"
+    generation: 1
+    name: profile-service
+    namespace: mern-app
+    resourceVersion: "37206"
+    uid: 3e3a62fe-879b-466e-8952-532ec408a2aa
+  spec:
+    progressDeadlineSeconds: 600
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        app: profile-service
+    strategy:
+      rollingUpdate:
+        maxSurge: 25%
+        maxUnavailable: 25%
+      type: RollingUpdate
+    template:
+      metadata:
+        labels:
+          app: profile-service
+      spec:
+        containers:
+        - env:
+          - name: PORT
+            value: "3002"
+          - name: MONGO_URL
+            valueFrom:
+              secretKeyRef:
+                key: MONGO_URL
+                name: profile-service-secret
+          image: 057079472578.dkr.ecr.ap-south-1.amazonaws.com/profile-service:1.0
+          imagePullPolicy: IfNotPresent
+          name: profile-service
+          ports:
+          - containerPort: 3002
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 3002
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+  status:
+    availableReplicas: 1
+    conditions:
+    - lastTransitionTime: "2026-10-11T14:07:08Z"
+      lastUpdateTime: "2026-10-11T14:07:08Z"
+      message: Deployment has minimum availability.
+      reason: MinimumReplicasAvailable
+      status: "True"
+      type: Available
+    - lastTransitionTime: "2026-10-11T14:06:54Z"
+      lastUpdateTime: "2026-10-11T14:07:08Z"
+      message: ReplicaSet "profile-service-7b777c68b9" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    observedGeneration: 1
+    readyReplicas: 1
+    replicas: 1
+    terminatingReplicas: 0
+    updatedReplicas: 1
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"frontend-service","namespace":"mern-app"},"spec":{"ports":[{"port":80,"protocol":"TCP","targetPort":80}],"selector":{"app":"frontend"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-10-11T14:12:21Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    name: frontend-service
+    namespace: mern-app
+    resourceVersion: "38204"
+    uid: 1c5be21a-0561-4942-aacd-24e95ca550c0
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.100.223.142
+    clusterIPs:
+    - 10.100.223.142
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - nodePort: 32306
+      port: 80
+      protocol: TCP
+      targetPort: 80
+    selector:
+      app: frontend
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - hostname: a1c5be21a05614942aacd24e95ca550c-1244022640.ap-south-1.elb.amazonaws.com
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"hello-service","namespace":"mern-app"},"spec":{"ports":[{"port":3001,"protocol":"TCP","targetPort":3001}],"selector":{"app":"hello-service"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-10-11T12:34:16Z"
+    name: hello-service
+    namespace: mern-app
+    resourceVersion: "20452"
+    uid: d588d333-144a-4846-a0ec-65ebf82e9af7
+  spec:
+    clusterIP: 10.100.24.152
+    clusterIPs:
+    - 10.100.24.152
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 3001
+      protocol: TCP
+      targetPort: 3001
+    selector:
+      app: hello-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"profile-service","namespace":"mern-app"},"spec":{"ports":[{"port":3002,"protocol":"TCP","targetPort":3002}],"selector":{"app":"profile-service"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-10-11T14:08:33Z"
+    name: profile-service
+    namespace: mern-app
+    resourceVersion: "37463"
+    uid: 803d2604-1197-47db-944a-757961f2730b
+  spec:
+    clusterIP: 10.100.95.8
+    clusterIPs:
+    - 10.100.95.8
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - port: 3002
+      protocol: TCP
+      targetPort: 3002
+    selector:
+      app: profile-service
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""
